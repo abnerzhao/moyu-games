@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f6ef">
+  <meta name="description" content="A lightweight collection of daily mini-games for quick puzzle breaks.">
+  <title>摸鱼小憩</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f8f6ef;
+      --ink: #151515;
+      --muted: #6d6a62;
+      --line: #e3ded2;
+      --accent: #0f766e;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      letter-spacing: 0;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: 28px 18px 46px;
+    }
+    .site-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 760;
+      line-height: 1.15;
+    }
+    .small,
+    .nav-link,
+    .foot {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .game-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .nav-link:hover,
+    .nav-link.is-active {
+      color: var(--ink);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      padding-top: 22px;
+    }
+    .card {
+      min-height: 178px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 247, 0.82);
+      padding: 18px;
+      display: grid;
+      align-content: space-between;
+      transition: border-color 140ms ease, transform 140ms ease;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .card-title {
+      font-size: 21px;
+      font-weight: 760;
+      line-height: 1.2;
+    }
+    .card-text {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .card-meta {
+      margin-top: 20px;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .foot {
+      border-top: 1px solid var(--line);
+      margin-top: 24px;
+      padding-top: 14px;
+    }
+    @media (max-width: 760px) {
+      .site-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .game-nav {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="site-head">
+      <h1>摸鱼小憩</h1>
+      <nav class="game-nav" aria-label="小游戏导航">
+        <a class="nav-link is-active" href="games.html">全部</a>
+        <a class="nav-link" href="shape-guess.html">地理</a>
+        <a class="nav-link" href="sudoku.html">数独</a>
+        <a class="nav-link" href="maze.html">迷宫</a>
+        <a class="nav-link" href="lantern-riddles.html">灯谜</a>
+        <a class="nav-link" href="idiom-guess.html">成语</a>
+        <a class="nav-link" href="english.html">英语</a>
+      </nav>
+    </header>
+
+    <section class="grid" aria-label="小游戏列表">
+      <a class="card" href="shape-guess.html">
+        <div>
+          <div class="card-title">地理轮廓猜谜</div>
+          <div class="card-text">看轮廓猜世界国家或中国省份，猜错会给方向和距离提示。</div>
+        </div>
+        <div class="card-meta">SHAPE · DAILY</div>
+      </a>
+      <a class="card" href="sudoku.html">
+        <div>
+          <div class="card-title">数独</div>
+          <div class="card-text">每天一盘 9x9 数独，适合 5 到 15 分钟的逻辑热身。</div>
+        </div>
+        <div class="card-meta">LOGIC · GRID</div>
+      </a>
+      <a class="card" href="maze.html">
+        <div>
+          <div class="card-title">走迷宫</div>
+          <div class="card-text">键盘或按钮控制，从左上角走到右下角，随机生成新迷宫。</div>
+        </div>
+        <div class="card-meta">PATH · QUICK</div>
+      </a>
+      <a class="card" href="lantern-riddles.html">
+        <div>
+          <div class="card-title">猜灯谜</div>
+          <div class="card-text">谜面短，答案多是字词、节令和日常物件，适合碎片时间。</div>
+        </div>
+        <div class="card-meta">CHINESE · RIDDLE</div>
+      </a>
+      <a class="card" href="idiom-guess.html">
+        <div>
+          <div class="card-title">看图猜成语</div>
+          <div class="card-text">用简笔图形和符号表达成语，猜出四字答案。</div>
+        </div>
+        <div class="card-meta">IDIOM · VISUAL</div>
+      </a>
+      <a class="card" href="english.html">
+        <div>
+          <div class="card-title">英语小练习</div>
+          <div class="card-text">短回合选择题，练常用词和短语，答完立即反馈。</div>
+        </div>
+        <div class="card-meta">ENGLISH · QUICK</div>
+      </a>
+    </section>
+
+    <footer class="foot">Designed by <a href="https://abnerzhao.com" target="_blank" rel="noreferrer">Abner Zhao</a></footer>
+  </main>
+</body>
+</html>

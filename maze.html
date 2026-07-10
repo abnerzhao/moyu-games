@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f6ef">
+  <title>走迷宫</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f8f6ef;
+      --ink: #151515;
+      --muted: #6d6a62;
+      --line: #e3ded2;
+      --accent: #0f766e;
+      --accent-weak: #d7ebe6;
+      --wall: #b8b0a2;
+      --path: #fbf8f0;
+      --goal: #b89422;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      letter-spacing: 0;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    .page {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: 28px 18px 46px;
+    }
+    .site-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 760;
+      line-height: 1.15;
+    }
+    .nav-link,
+    .small,
+    .foot {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .game-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .nav-link:hover,
+    .nav-link.is-active {
+      color: var(--ink);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 18px;
+      padding-top: 22px;
+      align-items: start;
+    }
+    .maze-wrap,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 247, 0.82);
+    }
+    .maze-wrap {
+      padding: 20px;
+      display: grid;
+      place-items: center;
+    }
+    .maze {
+      width: min(100%, 560px);
+      aspect-ratio: 1;
+      display: grid;
+      gap: 0;
+      background: var(--wall);
+      border: 1px solid #d8d1c2;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .tile {
+      background: var(--path);
+      min-width: 0;
+      position: relative;
+    }
+    .tile.wall {
+      background: var(--wall);
+    }
+    .tile.player,
+    .tile.goal {
+      background: var(--path);
+    }
+    .tile.player::after,
+    .tile.goal::after {
+      content: "";
+      position: absolute;
+      inset: 26%;
+      border-radius: 999px;
+    }
+    .tile.player::after {
+      background: var(--accent);
+    }
+    .tile.goal::after {
+      background: var(--goal);
+    }
+    .panel {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+    .difficulty {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .btn {
+      min-height: 42px;
+      border: 1px solid var(--ink);
+      border-radius: 6px;
+      background: var(--ink);
+      color: #fff;
+      padding: 0 13px;
+      font-weight: 720;
+    }
+    .btn.secondary {
+      background: transparent;
+      color: var(--ink);
+    }
+    .btn.is-active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+    .pad {
+      display: grid;
+      grid-template-columns: repeat(3, 42px);
+      gap: 6px;
+      justify-content: center;
+    }
+    .pad .blank {
+      visibility: hidden;
+    }
+    .message {
+      min-height: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .message.strong {
+      color: var(--accent);
+      font-weight: 720;
+    }
+    .foot {
+      border-top: 1px solid var(--line);
+      margin-top: 24px;
+      padding-top: 14px;
+    }
+    @media (max-width: 760px) {
+      .site-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .game-nav {
+        justify-content: flex-start;
+      }
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="site-head">
+      <h1>走迷宫</h1>
+      <nav class="game-nav" aria-label="小游戏导航">
+        <a class="nav-link" href="games.html">全部</a>
+        <a class="nav-link" href="shape-guess.html">地理</a>
+        <a class="nav-link" href="sudoku.html">数独</a>
+        <a class="nav-link is-active" href="maze.html">迷宫</a>
+        <a class="nav-link" href="lantern-riddles.html">灯谜</a>
+        <a class="nav-link" href="idiom-guess.html">成语</a>
+        <a class="nav-link" href="english.html">英语</a>
+      </nav>
+    </header>
+
+    <section class="layout">
+      <div class="maze-wrap">
+        <div class="maze" id="maze" aria-label="迷宫"></div>
+      </div>
+      <aside class="panel">
+        <div class="small" id="mazeMeta">RANDOM · 15x15 · N 新迷宫</div>
+        <div class="message" id="message">从左上角走到右下角。</div>
+        <div class="difficulty" aria-label="难度">
+          <button class="btn secondary" type="button" data-size="11">简单</button>
+          <button class="btn secondary is-active" type="button" data-size="15">中等</button>
+          <button class="btn secondary" type="button" data-size="21">困难</button>
+        </div>
+        <button class="btn" type="button" id="newButton">新迷宫</button>
+        <div class="pad" aria-label="方向控制">
+          <button class="btn secondary blank" type="button"></button>
+          <button class="btn secondary" type="button" data-move="0,-1">↑</button>
+          <button class="btn secondary blank" type="button"></button>
+          <button class="btn secondary" type="button" data-move="-1,0">←</button>
+          <button class="btn secondary" type="button" data-move="0,1">↓</button>
+          <button class="btn secondary" type="button" data-move="1,0">→</button>
+        </div>
+      </aside>
+    </section>
+
+    <footer class="foot">Designed by <a href="https://abnerzhao.com" target="_blank" rel="noreferrer">Abner Zhao</a></footer>
+  </main>
+
+  <script>
+    const mazeEl = document.querySelector('#maze');
+    const message = document.querySelector('#message');
+    const mazeMeta = document.querySelector('#mazeMeta');
+    const difficultyButtons = [...document.querySelectorAll('[data-size]')];
+    let size = 15;
+    let grid = [];
+    let player = { x: 1, y: 1 };
+    let goal = { x: size - 2, y: size - 2 };
+
+    function shuffle(items) {
+      return items.map((item) => [Math.random(), item]).sort((a, b) => a[0] - b[0]).map((item) => item[1]);
+    }
+
+    function generate() {
+      goal = { x: size - 2, y: size - 2 };
+      grid = Array.from({ length: size }, () => Array.from({ length: size }, () => 1));
+      player = { x: 1, y: 1 };
+      grid[1][1] = 0;
+      carve(1, 1);
+      grid[goal.y][goal.x] = 0;
+      mazeMeta.textContent = `RANDOM · ${size}x${size} · N 新迷宫`;
+      message.textContent = '从左上角走到右下角。';
+      message.className = 'message';
+      render();
+    }
+
+    function carve(x, y) {
+      const dirs = shuffle([[2, 0], [-2, 0], [0, 2], [0, -2]]);
+      dirs.forEach(([dx, dy]) => {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx <= 0 || ny <= 0 || nx >= size - 1 || ny >= size - 1 || grid[ny][nx] === 0) return;
+        grid[y + dy / 2][x + dx / 2] = 0;
+        grid[ny][nx] = 0;
+        carve(nx, ny);
+      });
+    }
+
+    function render() {
+      mazeEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+      mazeEl.innerHTML = '';
+      for (let y = 0; y < size; y += 1) {
+        for (let x = 0; x < size; x += 1) {
+          const tile = document.createElement('div');
+          tile.className = 'tile';
+          if (grid[y][x]) tile.classList.add('wall');
+          if (x === goal.x && y === goal.y) tile.classList.add('goal');
+          if (x === player.x && y === player.y) tile.classList.add('player');
+          mazeEl.appendChild(tile);
+        }
+      }
+    }
+
+    function move(dx, dy) {
+      const next = { x: player.x + dx, y: player.y + dy };
+      if (grid[next.y]?.[next.x] !== 0) return;
+      player = next;
+      if (player.x === goal.x && player.y === goal.y) {
+        message.textContent = '到达终点。';
+        message.className = 'message strong';
+      }
+      render();
+    }
+
+    document.querySelector('#newButton').addEventListener('click', generate);
+    difficultyButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        size = Number(button.dataset.size);
+        difficultyButtons.forEach((item) => item.classList.toggle('is-active', item === button));
+        generate();
+      });
+    });
+    document.querySelectorAll('[data-move]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const [dx, dy] = button.dataset.move.split(',').map(Number);
+        move(dx, dy);
+      });
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowUp') move(0, -1);
+      if (event.key === 'ArrowDown') move(0, 1);
+      if (event.key === 'ArrowLeft') move(-1, 0);
+      if (event.key === 'ArrowRight') move(1, 0);
+      if (event.key.toLowerCase() === 'n') generate();
+    });
+
+    generate();
+  </script>
+</body>
+</html>

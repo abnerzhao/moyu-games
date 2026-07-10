@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f6ef">
+  <title>猜灯谜</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f8f6ef;
+      --ink: #151515;
+      --muted: #6d6a62;
+      --line: #e3ded2;
+      --accent: #b7352d;
+      --accent-weak: #f3dfd7;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      letter-spacing: 0;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .page {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: 28px 18px 46px;
+    }
+    .site-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 760;
+      line-height: 1.15;
+    }
+    .nav-link,
+    .small,
+    .foot {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .game-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .nav-link:hover,
+    .nav-link.is-active {
+      color: var(--ink);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 18px;
+      padding-top: 22px;
+      align-items: start;
+    }
+    .riddle,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 247, 0.82);
+    }
+    .riddle {
+      min-height: 420px;
+      padding: 26px;
+      display: grid;
+      align-content: center;
+      gap: 22px;
+    }
+    .riddle-meta {
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .riddle-text {
+      font-size: clamp(30px, 6vw, 56px);
+      font-weight: 760;
+      line-height: 1.25;
+    }
+    .panel {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+    input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fffdf7;
+      color: var(--ink);
+      padding: 0 12px;
+      outline: 0;
+    }
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-weak);
+    }
+    .btn {
+      min-height: 42px;
+      border: 1px solid var(--ink);
+      border-radius: 6px;
+      background: var(--ink);
+      color: #fff;
+      padding: 0 13px;
+      font-weight: 720;
+    }
+    .btn.secondary {
+      background: transparent;
+      color: var(--ink);
+    }
+    .message {
+      min-height: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .message.strong {
+      color: var(--accent);
+      font-weight: 720;
+    }
+    .answer {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      display: grid;
+      gap: 6px;
+    }
+    .answer-name {
+      font-size: 24px;
+      font-weight: 760;
+    }
+    .foot {
+      border-top: 1px solid var(--line);
+      margin-top: 24px;
+      padding-top: 14px;
+    }
+    @media (max-width: 760px) {
+      .site-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .game-nav {
+        justify-content: flex-start;
+      }
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="site-head">
+      <h1>猜灯谜</h1>
+      <nav class="game-nav" aria-label="小游戏导航">
+        <a class="nav-link" href="games.html">全部</a>
+        <a class="nav-link" href="shape-guess.html">地理</a>
+        <a class="nav-link" href="sudoku.html">数独</a>
+        <a class="nav-link" href="maze.html">迷宫</a>
+        <a class="nav-link is-active" href="lantern-riddles.html">灯谜</a>
+        <a class="nav-link" href="idiom-guess.html">成语</a>
+        <a class="nav-link" href="english.html">英语</a>
+      </nav>
+    </header>
+
+    <section class="layout">
+      <div class="riddle">
+        <div class="riddle-meta" id="meta">RIDDLE</div>
+        <div class="riddle-text" id="riddleText"></div>
+      </div>
+      <aside class="panel">
+        <div class="small">输入答案</div>
+        <input id="answerInput" autocomplete="off" placeholder="例如：明月">
+        <button class="btn" type="button" id="checkButton">猜</button>
+        <button class="btn secondary" type="button" id="hintButton">提示</button>
+        <button class="btn secondary" type="button" id="nextButton">下一题</button>
+        <div class="message" id="message">谜面不长，先别急着看提示。</div>
+        <div class="answer" id="answer" hidden>
+          <div class="small">答案</div>
+          <div class="answer-name" id="answerName"></div>
+          <div class="message" id="explain"></div>
+        </div>
+      </aside>
+    </section>
+
+    <footer class="foot">Designed by <a href="https://abnerzhao.com" target="_blank" rel="noreferrer">Abner Zhao</a></footer>
+  </main>
+
+  <script>
+    const riddles = [
+      { text: '一边绿，一边红；一边怕水，一边怕虫。', answer: '秋', hint: '打一字', explain: '禾怕虫，火怕水，合起来是秋。' },
+      { text: '有头没有颈，身上冷冰冰，有翅不能飞，无脚也能行。', answer: '鱼', hint: '打一动物', explain: '鱼有头无颈，靠鳍在水里游。' },
+      { text: '千条线，万条线，落到水里看不见。', answer: '雨', hint: '打一自然现象', explain: '雨像线一样落下，入水即融。' },
+      { text: '上不在上，下不在下，不可在上，且宜在下。', answer: '一', hint: '打一字', explain: '字形谜，横在中间。' },
+      { text: '白天一起玩，夜里一块眠，到老不分散，人间好姻缘。', answer: '筷子', hint: '打一日用品', explain: '筷子总是成双使用。' },
+      { text: '一个小姑娘，坐在水中央，身穿粉红袄，阵阵放清香。', answer: '荷花', hint: '打一植物', explain: '荷花生于水中，花色常为粉红。' },
+      { text: '圆圆像个盘，挂在半天边，晚上才出来，白天看不见。', answer: '月亮', hint: '打一自然物', explain: '月亮夜晚常见，形似圆盘。' },
+      { text: '有面没有口，有脚没有手，听人讲话，陪人走路。', answer: '鞋', hint: '打一穿戴物', explain: '鞋有鞋面和鞋底，常陪人走路。' },
+      { text: '小小诸葛亮，独坐军中帐，摆成八卦阵，专捉飞来将。', answer: '蜘蛛', hint: '打一动物', explain: '蜘蛛结网捕虫，像布阵。' },
+      { text: '兄弟七八个，围着柱子坐，大家一分手，衣服就扯破。', answer: '蒜', hint: '打一蔬菜', explain: '蒜瓣围着蒜心，掰开会破皮。' }
+    ];
+
+    function dailyPick(items, count) {
+      const now = new Date();
+      let seed = Number(`${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`);
+      const pool = [...items];
+      for (let i = pool.length - 1; i > 0; i -= 1) {
+        seed = (seed * 9301 + 49297) % 233280;
+        const j = seed % (i + 1);
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      return pool.slice(0, count);
+    }
+
+    const dailyRiddles = dailyPick(riddles, 5);
+    let index = 0;
+    const riddleText = document.querySelector('#riddleText');
+    const meta = document.querySelector('#meta');
+    const input = document.querySelector('#answerInput');
+    const message = document.querySelector('#message');
+    const answer = document.querySelector('#answer');
+    const answerName = document.querySelector('#answerName');
+    const explain = document.querySelector('#explain');
+
+    function normalize(value) {
+      return value.trim().replace(/\s/g, '');
+    }
+
+    function render() {
+      const item = dailyRiddles[index];
+      meta.textContent = `DAILY RIDDLE ${index + 1}/${dailyRiddles.length}`;
+      riddleText.textContent = item.text;
+      input.value = '';
+      answer.hidden = true;
+      answerName.textContent = '';
+      explain.textContent = '';
+      message.textContent = '谜面不长，先别急着看提示。';
+      message.className = 'message';
+      input.focus();
+    }
+
+    function reveal(strong) {
+      const item = dailyRiddles[index];
+      answer.hidden = false;
+      answerName.textContent = item.answer;
+      explain.textContent = item.explain;
+      message.textContent = strong ? '答对了。' : '答案已揭晓。';
+      message.className = strong ? 'message strong' : 'message';
+    }
+
+    document.querySelector('#checkButton').addEventListener('click', () => {
+      if (normalize(input.value) === dailyRiddles[index].answer) reveal(true);
+      else message.textContent = '还不对，再想想。';
+    });
+    document.querySelector('#hintButton').addEventListener('click', () => {
+      message.textContent = dailyRiddles[index].hint;
+    });
+    document.querySelector('#nextButton').addEventListener('click', () => {
+      index = (index + 1) % dailyRiddles.length;
+      render();
+    });
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') document.querySelector('#checkButton').click();
+    });
+
+    render();
+  </script>
+</body>
+</html>

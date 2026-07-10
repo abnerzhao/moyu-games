@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f6ef">
+  <title>英语小练习</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f8f6ef;
+      --ink: #151515;
+      --muted: #6d6a62;
+      --line: #e3ded2;
+      --accent: #0f766e;
+      --accent-weak: #d7ebe6;
+      --wrong: #b7352d;
+      --wrong-weak: #f3dfd7;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      letter-spacing: 0;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    .page {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: 28px 18px 46px;
+    }
+    .site-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 760;
+      line-height: 1.15;
+    }
+    .nav-link,
+    .small,
+    .foot {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .game-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .nav-link:hover,
+    .nav-link.is-active {
+      color: var(--ink);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 18px;
+      padding-top: 22px;
+      align-items: start;
+    }
+    .quiz,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 247, 0.82);
+    }
+    .quiz {
+      min-height: 430px;
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+      align-content: center;
+    }
+    .progress {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e9e3d6;
+    }
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--accent);
+      transition: width 160ms ease;
+    }
+    .prompt {
+      font-size: clamp(22px, 4.8vw, 40px);
+      font-weight: 780;
+      line-height: 1.15;
+    }
+    .translation {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.45;
+    }
+    .choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .choice {
+      min-height: 54px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf7;
+      color: var(--ink);
+      padding: 0 14px;
+      font-weight: 720;
+      text-align: left;
+    }
+    .choice:hover {
+      border-color: var(--accent);
+    }
+    .choice.is-right {
+      border-color: var(--accent);
+      background: var(--accent-weak);
+      color: #0f3d38;
+    }
+    .choice.is-wrong {
+      border-color: var(--wrong);
+      background: var(--wrong-weak);
+      color: var(--wrong);
+    }
+    .panel {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.58);
+      padding: 10px 11px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .btn {
+      min-height: 42px;
+      border: 1px solid var(--ink);
+      border-radius: 6px;
+      background: var(--ink);
+      color: #fff;
+      padding: 0 13px;
+      font-weight: 720;
+    }
+    .btn.secondary {
+      background: transparent;
+      color: var(--ink);
+    }
+    .difficulty {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .difficulty .btn {
+      min-height: 38px;
+      padding: 0 8px;
+    }
+    .btn.is-active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+    .message {
+      min-height: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .message.strong {
+      color: var(--accent);
+      font-weight: 720;
+    }
+    .foot {
+      border-top: 1px solid var(--line);
+      margin-top: 24px;
+      padding-top: 14px;
+    }
+    @media (max-width: 760px) {
+      .site-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .game-nav {
+        justify-content: flex-start;
+      }
+      .layout,
+      .choices {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="site-head">
+      <h1>英语小练习</h1>
+      <nav class="game-nav" aria-label="小游戏导航">
+        <a class="nav-link" href="games.html">全部</a>
+        <a class="nav-link" href="shape-guess.html">地理</a>
+        <a class="nav-link" href="sudoku.html">数独</a>
+        <a class="nav-link" href="maze.html">迷宫</a>
+        <a class="nav-link" href="lantern-riddles.html">灯谜</a>
+        <a class="nav-link" href="idiom-guess.html">成语</a>
+        <a class="nav-link is-active" href="english.html">英语</a>
+      </nav>
+    </header>
+
+    <section class="layout">
+      <div class="quiz">
+        <div class="progress" aria-label="进度">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div>
+          <div class="small" id="meta">LESSON</div>
+          <div class="prompt" id="prompt"></div>
+          <div class="translation" id="translation"></div>
+        </div>
+        <div class="choices" id="choices"></div>
+      </div>
+      <aside class="panel">
+        <div class="difficulty" aria-label="难度">
+          <button class="btn secondary" type="button" data-level="basic">基础</button>
+          <button class="btn secondary is-active" type="button" data-level="advanced">进阶</button>
+          <button class="btn secondary" type="button" data-level="challenge">挑战</button>
+        </div>
+        <div class="stat">
+          <span class="small">正确</span>
+          <span class="small"><span id="score">0</span>/<span id="total">0</span></span>
+        </div>
+        <div class="stat">
+          <span class="small">连对</span>
+          <span class="small" id="streak">0</span>
+        </div>
+        <button class="btn" type="button" id="nextButton" disabled>下一题</button>
+        <button class="btn secondary" type="button" id="restartButton">重新开始</button>
+        <div class="message" id="message">选择正确的英文表达。</div>
+      </aside>
+    </section>
+
+    <footer class="foot">Designed by <a href="https://abnerzhao.com" target="_blank" rel="noreferrer">Abner Zhao</a></footer>
+  </main>
+
+  <script>
+    const questionBanks = {
+      basic: [
+        { zh: '我想喝水。', answer: 'I want some water.', options: ['I want some water.', 'I have a book.', 'She likes music.', 'We are late.'] },
+        { zh: '今天天气很好。', answer: 'The weather is nice today.', options: ['The weather is nice today.', 'The train is fast.', 'This bag is heavy.', 'He is my teacher.'] },
+        { zh: '我正在学习英语。', answer: 'I am learning English.', options: ['I am learning English.', 'I am cooking dinner.', 'I am watching a movie.', 'I am opening the door.'] },
+        { zh: '你能帮我吗？', answer: 'Can you help me?', options: ['Can you help me?', 'Do you like tea?', 'Where is the station?', 'What time is it?'] },
+        { zh: '我明天见你。', answer: 'I will see you tomorrow.', options: ['I will see you tomorrow.', 'I saw you yesterday.', 'I live near here.', 'I need a ticket.'] },
+        { zh: '这个多少钱？', answer: 'How much is this?', options: ['How much is this?', 'How old are you?', 'How far is it?', 'How many people?'] },
+        { zh: '我不太明白。', answer: 'I do not quite understand.', options: ['I do not quite understand.', 'I do not have breakfast.', 'I do not play football.', 'I do not need coffee.'] },
+        { zh: '请再说一遍。', answer: 'Please say it again.', options: ['Please say it again.', 'Please close the window.', 'Please turn left.', 'Please wait outside.'] }
+      ],
+      advanced: [
+        { zh: '我本来要出门，但开始下雨了。', answer: 'I was about to leave when it started raining.', options: ['I was about to leave when it started raining.', 'I was going to leave while it starts raining.', 'I almost leave when it rained.', 'I have left before it was raining.'] },
+        { zh: '这取决于天气。', answer: 'It depends on the weather.', options: ['It depends on the weather.', 'It depends of the weather.', 'It is depending the weather.', 'It decides by the weather.'] },
+        { zh: '我已经习惯早起了。', answer: 'I’m used to getting up early.', options: ['I’m used to getting up early.', 'I used to getting up early.', 'I’m used to get up early.', 'I’m used for getting up early.'] },
+        { zh: '你最好提前预订。', answer: 'You’d better book in advance.', options: ['You’d better book in advance.', 'You better to book early.', 'You’d better booking in advance.', 'You are better book ahead.'] },
+        { zh: '他差点错过火车。', answer: 'He almost missed the train.', options: ['He almost missed the train.', 'He almost missed to the train.', 'He nearly missed taking train.', 'He was almost miss the train.'] },
+        { zh: '我宁愿在家工作。', answer: 'I’d rather work from home.', options: ['I’d rather work from home.', 'I’d prefer work at home.', 'I rather to work from home.', 'I more like work in home.'] },
+        { zh: '这比我预期的难。', answer: 'It’s harder than I expected.', options: ['It’s harder than I expected.', 'It’s hard than I expected.', 'It’s harder as I expected.', 'It’s more hard than I expect.'] },
+        { zh: '我想确认一下细节。', answer: 'I’d like to confirm the details.', options: ['I’d like to confirm the details.', 'I’d like confirm details.', 'I want make sure the detail.', 'I’d like to check about the details.'] }
+      ],
+      challenge: [
+        { zh: '别把这件事想得太复杂。', answer: 'Don’t overthink it.', options: ['Don’t overthink it.', 'Don’t think it too many.', 'Don’t make it over thinking.', 'Don’t consider it too complexly.'] },
+        { zh: '我一时想不起来他的名字。', answer: 'His name slipped my mind.', options: ['His name slipped my mind.', 'I forgot his name in a moment.', 'His name escaped from my brain.', 'I cannot remember him name temporarily.'] },
+        { zh: '这个方案说得通。', answer: 'This plan makes sense.', options: ['This plan makes sense.', 'This plan has sense.', 'This plan says through.', 'This plan is reasonable sense.'] },
+        { zh: '我们先把重点放在用户体验上。', answer: 'Let’s focus on the user experience first.', options: ['Let’s focus on the user experience first.', 'Let’s first focus in user experience.', 'Let’s put focus at users feeling firstly.', 'Let’s pay attention about user experience first.'] },
+        { zh: '我不确定这是否值得投入时间。', answer: 'I’m not sure whether it’s worth the time.', options: ['I’m not sure whether it’s worth the time.', 'I’m not sure is it worth time.', 'I’m not sure whether it worths time.', 'I don’t sure if it deserves the time.'] },
+        { zh: '这个问题比看起来更棘手。', answer: 'This issue is trickier than it looks.', options: ['This issue is trickier than it looks.', 'This issue is more tricky as it looks.', 'This issue is difficult than seen.', 'This issue tricks more than it looks.'] },
+        { zh: '我倾向于先做一个小版本。', answer: 'I’d lean toward building a small version first.', options: ['I’d lean toward building a small version first.', 'I lean to build a little version firstly.', 'I prefer toward make a small version first.', 'I would tend building small version at first.'] },
+        { zh: '这会让后续维护更轻松。', answer: 'This will make maintenance easier later.', options: ['This will make maintenance easier later.', 'This will let maintain more easy after.', 'This makes later maintain easier.', 'This will help maintenance become easy after.'] }
+      ]
+    };
+
+    let questions = [];
+    let index = 0;
+    let score = 0;
+    let streak = 0;
+    let level = 'advanced';
+    let answered = false;
+    let autoTimer = null;
+
+    const prompt = document.querySelector('#prompt');
+    const translation = document.querySelector('#translation');
+    const choices = document.querySelector('#choices');
+    const message = document.querySelector('#message');
+    const scoreEl = document.querySelector('#score');
+    const totalEl = document.querySelector('#total');
+    const streakEl = document.querySelector('#streak');
+    const meta = document.querySelector('#meta');
+    const progressFill = document.querySelector('#progressFill');
+    const nextButton = document.querySelector('#nextButton');
+    const levelButtons = [...document.querySelectorAll('[data-level]')];
+
+    function shuffle(items) {
+      return items.map((item) => [Math.random(), item]).sort((a, b) => a[0] - b[0]).map((item) => item[1]);
+    }
+
+    function start() {
+      questions = shuffle(questionBanks[level]).slice(0, 6).map((item) => ({ ...item, options: shuffle(item.options) }));
+      index = 0;
+      score = 0;
+      streak = 0;
+      answered = false;
+      totalEl.textContent = questions.length;
+      render();
+    }
+
+    function render() {
+      clearTimeout(autoTimer);
+      const item = questions[index];
+      answered = false;
+      meta.textContent = `${level.toUpperCase()} ${index + 1}/${questions.length}`;
+      prompt.textContent = item.zh;
+      translation.textContent = '';
+      choices.innerHTML = item.options.map((option) => `<button class="choice" type="button">${option}</button>`).join('');
+      message.textContent = level === 'basic' ? '选择正确的英文表达。' : '选择最自然的英文表达。';
+      message.className = 'message';
+      scoreEl.textContent = score;
+      streakEl.textContent = streak;
+      progressFill.style.width = `${(index / questions.length) * 100}%`;
+      nextButton.disabled = true;
+    }
+
+    function goNext() {
+      if (index === questions.length - 1) {
+        message.textContent = `完成，正确 ${score}/${questions.length}。`;
+        message.className = 'message strong';
+        nextButton.disabled = true;
+        return;
+      }
+      index += 1;
+      render();
+    }
+
+    function choose(button) {
+      if (answered) return;
+      answered = true;
+      const item = questions[index];
+      const correct = button.textContent === item.answer;
+      [...choices.children].forEach((choice) => {
+        if (choice.textContent === item.answer) choice.classList.add('is-right');
+      });
+      if (!correct) button.classList.add('is-wrong');
+      if (correct) {
+        score += 1;
+        streak += 1;
+        message.textContent = '正确，自动进入下一题。';
+        message.className = 'message strong';
+        autoTimer = setTimeout(goNext, 700);
+      } else {
+        streak = 0;
+        message.textContent = '不对，绿色的是正确答案。';
+        message.className = 'message';
+      }
+      translation.textContent = item.answer;
+      scoreEl.textContent = score;
+      streakEl.textContent = streak;
+      nextButton.disabled = false;
+      progressFill.style.width = `${((index + 1) / questions.length) * 100}%`;
+    }
+
+    choices.addEventListener('click', (event) => {
+      const button = event.target.closest('.choice');
+      if (button) choose(button);
+    });
+    nextButton.addEventListener('click', goNext);
+    document.querySelector('#restartButton').addEventListener('click', () => {
+      clearTimeout(autoTimer);
+      start();
+    });
+    levelButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        level = button.dataset.level;
+        levelButtons.forEach((item) => item.classList.toggle('is-active', item === button));
+        clearTimeout(autoTimer);
+        start();
+      });
+    });
+
+    start();
+  </script>
+</body>
+</html>
